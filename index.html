@@ -1,199 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIP Filter Builder</title>
+    <meta name="description" content="NIP Filter Builder for Diablo II: Resurrected - Forge powerful loot filters">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>NIP4NOOBZ - Demonic Filter Forge</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
-
 <body>
-    <div class="container">
-        <header>
-            <h1>nip 4 noobz</h1>
+    <div class="ember-container" id="emberContainer"></div>
+
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+
+    <div class="forge-container">
+        <header class="forge-header">
+            <div class="header-rune left"></div>
+            <div class="header-content">
+                <div class="title-wrapper">
+                    <span class="title-accent">~ The ~</span>
+                    <h1 class="forge-title">
+                        <span class="title-char" data-char="N">N</span><span class="title-char" data-char="I">I</span><span class="title-char" data-char="P">P</span>
+                        <span class="title-divider"></span>
+                        <span class="title-char" data-char="F">F</span><span class="title-char" data-char="O">O</span><span class="title-char" data-char="R">R</span><span class="title-char" data-char="G">G</span><span class="title-char" data-char="E">E</span>
+                    </h1>
+                    <span class="title-accent">~ for Sanctuary ~</span>
+                </div>
+                <p class="forge-subtitle">Inscribe Your Filter Rules Upon the Horadric Tablets</p>
+                <div class="subtitle-decoration">
+                    <span class="deco-line"></span>
+                    <span class="deco-diamond"></span>
+                    <span class="deco-line"></span>
+                </div>
+            </div>
+            <div class="header-rune right"></div>
         </header>
-        <main>
-            <!-- Item Properties Section -->
-            <section class="filter-section">
-                <h2>📦 Item Properties</h2>
-                <div class="filter-grid">
-                    <div class="filter-group">
-                        <label for="itemName">Item Name</label>
-                        <select id="itemName" multiple size="8" style="padding-bottom: 21px;">
-                            <option value="">-- Select Item --</option>
-                            <optgroup label="Helms">
-                                <option value="shako">Shako</option>
-                                <option value="corona">Corona</option>
-                                <option value="diadem">Diadem</option>
-                                <option value="tiara">Tiara</option>
-                                <option value="circlet">Circlet</option>
-                                <option value="bonevisage">Bone Visage</option>
-                                <option value="grimhelm">Grim Helm</option>
-                                <option value="demonhead">Demon Head</option>
-                                <option value="spiredhelm">Spired Helm</option>
-                                <option value="slayerguard">Slayer Guard</option>
-                            </optgroup>
-                            <optgroup label="Body Armor">
-                                <option value="archonplate">Archon Plate</option>
-                                <option value="duskshroud">Dusk Shroud</option>
-                                <option value="mageplate">Mage Plate</option>
-                                <option value="sacredarmor">Sacred Armor</option>
-                                <option value="wirefleece">Wire Fleece</option>
-                                <option value="mesharmor">Mesh Armor</option>
-                            </optgroup>
-                            <optgroup label="Shields">
-                                <option value="monarch">Monarch</option>
-                                <option value="trollnest">Troll Nest</option>
-                                <option value="vortexshield">Vortex Shield</option>
-                                <option value="sacredtarge">Sacred Targe</option>
-                                <option value="zakarumshield">Zakarum Shield</option>
-                            </optgroup>
-                            <optgroup label="Gloves">
-                                <option value="lightgauntlets">Light Gauntlets</option>
-                                <option value="ogregauntlets">Ogre Gauntlets</option>
-                                <option value="chaingloves">Chain Gloves</option>
-                                <option value="vampirebonegloves">Vampire Bone Gloves</option>
-                            </optgroup>
-                            <optgroup label="Boots">
-                                <option value="warboots">War Boots</option>
-                                <option value="battleboots">Battle Boots</option>
-                                <option value="meshboots">Mesh Boots</option>
-                                <option value="scarabshellboots">Scarabshell Boots</option>
-                            </optgroup>
-                            <optgroup label="Belts">
-                                <option value="spiderwebsash">Spiderweb Sash</option>
-                                <option value="mithrilcoil">Mithril Coil</option>
-                                <option value="warbelt">War Belt</option>
-                            </optgroup>
-                            <optgroup label="Weapons">
-                                <option value="phaseblade">Phase Blade</option>
-                                <option value="berserkeraxe">Berserker Axe</option>
-                                <option value="colossusblade">Colossus Blade</option>
-                                <option value="thresher">Thresher</option>
-                                <option value="crypticaxe">Cryptic Axe</option>
-                                <option value="dimensionalshard">Dimensional Shard</option>
-                                <option value="swirlingcrystal">Swirling Crystal</option>
-                                <option value="hydrabow">Hydra Bow</option>
-                            </optgroup>
-                            <optgroup label="Jewelry">
-                                <option value="ring">Ring</option>
-                                <option value="amulet">Amulet</option>
-                                <option value="jewel">Jewel</option>
-                            </optgroup>
-                            <optgroup label="Charms">
-                                <option value="smallcharm">Small Charm</option>
-                                <option value="largecharm">Large Charm</option>
-                                <option value="grandcharm">Grand Charm</option>
-                            </optgroup>
-                            <optgroup label="Runes">
-                                <option value="elrune">El Rune</option>
-                                <option value="istrune">Ist Rune</option>
-                                <option value="malrune">Mal Rune</option>
-                                <option value="vexrune">Vex Rune</option>
-                                <option value="berrune">Ber Rune</option>
-                                <option value="jahrune">Jah Rune</option>
-                                <option value="zodrune">Zod Rune</option>
-                            </optgroup>
-                        </select>
-                    </div>
 
-                    <div class="filter-group">
-                        <label for="itemType">Item Type</label>
-                        <select id="itemType" multiple size="8" style="padding-bottom: 21px;">
-                            <option value="">-- Select Type --</option>
-                            <option value="armor">Armor</option>
-                            <option value="helm">Helm</option>
-                            <option value="shield">Shield</option>
-                            <option value="gloves">Gloves</option>
-                            <option value="boots">Boots</option>
-                            <option value="belt">Belt</option>
-                            <option value="ring">Ring</option>
-                            <option value="amulet">Amulet</option>
-                            <option value="circlet">Circlet</option>
-                            <option value="jewel">Jewel</option>
-                            <option value="weapon">Weapon</option>
-                            <option value="scepter">Scepter</option>
-                            <option value="wand">Wand</option>
-                            <option value="staff">Staff</option>
-                            <option value="orb">Orb</option>
-                            <option value="bow">Bow</option>
-                            <option value="crossbow">Crossbow</option>
-                            <option value="voodooheads">Voodoo Heads</option>
-                            <option value="auricshields">Auric Shields</option>
-                        </select>
+        <main class="forge-main">
+            <section class="forge-panel item-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
                     </div>
-
-                    <div class="filter-group">
-                        <label for="itemClass">Tier/Class</label>
-                        <select id="itemClass" multiple size="4">
-                            <option value="">-- Select Tier --</option>
-                            <option value="elite">Elite</option>
-                            <option value="exceptional">Exceptional</option>
-                            <option value="normal">Normal</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="etherealFlag">Ethereal</label>
-                        <select id="etherealFlag" multiple size="4">
-                            <option value="">-- Any --</option>
-                            <option value="== ethereal">Must be Ethereal</option>
-                            <option value="!= ethereal">Not Ethereal</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="itemQuality">Quality</label>
-                        <select id="itemQuality" multiple size="10.5" style="padding-bottom: 15px;">
-                            <option value="">-- Select Quality --</option>
-                            <option value="== unique">Unique</option>
-                            <option value="== set">Set</option>
-                            <option value="== rare">Rare</option>
-                            <option value=">= rare">Rare or better</option>
-                            <option value="== magic">Magic</option>
-                            <option value=">= magic">Magic or better</option>
-                            <option value="== crafted">Crafted</option>
-                            <option value="== superior">Superior</option>
-                            <option value="== normal">Normal</option>
-                        </select>
-                    </div>
+                    <h2 class="panel-title">Item Selection</h2>
+                    <div class="panel-line"></div>
                 </div>
-                <br>
-                <p><i>Control / Shift to select multiple</i></p>
+
+                <div class="panel-content">
+                    <div class="form-grid">
+                        <div class="form-field field-large">
+                            <label class="field-label">
+                                <span class="label-icon"></span>
+                                Item Name
+                            </label>
+                            <div class="select-wrapper">
+                                <select id="itemName" multiple size="6">
+                                    <option value="">-- Select Item --</option>
+                                    <optgroup label="Helms">
+                                        <option value="shako">Shako</option>
+                                        <option value="corona">Corona</option>
+                                        <option value="diadem">Diadem</option>
+                                        <option value="tiara">Tiara</option>
+                                        <option value="circlet">Circlet</option>
+                                        <option value="bonevisage">Bone Visage</option>
+                                        <option value="grimhelm">Grim Helm</option>
+                                        <option value="demonhead">Demon Head</option>
+                                        <option value="spiredhelm">Spired Helm</option>
+                                        <option value="slayerguard">Slayer Guard</option>
+                                    </optgroup>
+                                    <optgroup label="Body Armor">
+                                        <option value="archonplate">Archon Plate</option>
+                                        <option value="duskshroud">Dusk Shroud</option>
+                                        <option value="mageplate">Mage Plate</option>
+                                        <option value="sacredarmor">Sacred Armor</option>
+                                        <option value="wirefleece">Wire Fleece</option>
+                                        <option value="mesharmor">Mesh Armor</option>
+                                    </optgroup>
+                                    <optgroup label="Shields">
+                                        <option value="monarch">Monarch</option>
+                                        <option value="trollnest">Troll Nest</option>
+                                        <option value="vortexshield">Vortex Shield</option>
+                                        <option value="sacredtarge">Sacred Targe</option>
+                                        <option value="zakarumshield">Zakarum Shield</option>
+                                    </optgroup>
+                                    <optgroup label="Gloves">
+                                        <option value="lightgauntlets">Light Gauntlets</option>
+                                        <option value="ogregauntlets">Ogre Gauntlets</option>
+                                        <option value="chaingloves">Chain Gloves</option>
+                                        <option value="vampirebonegloves">Vampire Bone Gloves</option>
+                                    </optgroup>
+                                    <optgroup label="Boots">
+                                        <option value="warboots">War Boots</option>
+                                        <option value="battleboots">Battle Boots</option>
+                                        <option value="meshboots">Mesh Boots</option>
+                                        <option value="scarabshellboots">Scarabshell Boots</option>
+                                    </optgroup>
+                                    <optgroup label="Belts">
+                                        <option value="spiderwebsash">Spiderweb Sash</option>
+                                        <option value="mithrilcoil">Mithril Coil</option>
+                                        <option value="warbelt">War Belt</option>
+                                    </optgroup>
+                                    <optgroup label="Weapons">
+                                        <option value="phaseblade">Phase Blade</option>
+                                        <option value="berserkeraxe">Berserker Axe</option>
+                                        <option value="colossusblade">Colossus Blade</option>
+                                        <option value="thresher">Thresher</option>
+                                        <option value="crypticaxe">Cryptic Axe</option>
+                                        <option value="dimensionalshard">Dimensional Shard</option>
+                                        <option value="swirlingcrystal">Swirling Crystal</option>
+                                        <option value="hydrabow">Hydra Bow</option>
+                                    </optgroup>
+                                    <optgroup label="Jewelry">
+                                        <option value="ring">Ring</option>
+                                        <option value="amulet">Amulet</option>
+                                        <option value="jewel">Jewel</option>
+                                    </optgroup>
+                                    <optgroup label="Charms">
+                                        <option value="smallcharm">Small Charm</option>
+                                        <option value="largecharm">Large Charm</option>
+                                        <option value="grandcharm">Grand Charm</option>
+                                    </optgroup>
+                                    <optgroup label="Runes">
+                                        <option value="elrune">El Rune</option>
+                                        <option value="istrune">Ist Rune</option>
+                                        <option value="malrune">Mal Rune</option>
+                                        <option value="vexrune">Vex Rune</option>
+                                        <option value="berrune">Ber Rune</option>
+                                        <option value="jahrune">Jah Rune</option>
+                                        <option value="zodrune">Zod Rune</option>
+                                    </optgroup>
+                                </select>
+                                <input type="text" class="select-search" placeholder="Search items...">
+                            </div>
+                        </div>
+
+                        <div class="form-field field-large">
+                            <label class="field-label">
+                                <span class="label-icon"></span>
+                                Item Type
+                            </label>
+                            <div class="select-wrapper">
+                                <select id="itemType" multiple size="6">
+                                    <option value="">-- Select Type --</option>
+                                    <option value="armor">Armor</option>
+                                    <option value="helm">Helm</option>
+                                    <option value="shield">Shield</option>
+                                    <option value="gloves">Gloves</option>
+                                    <option value="boots">Boots</option>
+                                    <option value="belt">Belt</option>
+                                    <option value="ring">Ring</option>
+                                    <option value="amulet">Amulet</option>
+                                    <option value="circlet">Circlet</option>
+                                    <option value="jewel">Jewel</option>
+                                    <option value="weapon">Weapon</option>
+                                    <option value="scepter">Scepter</option>
+                                    <option value="wand">Wand</option>
+                                    <option value="staff">Staff</option>
+                                    <option value="orb">Orb</option>
+                                    <option value="bow">Bow</option>
+                                    <option value="crossbow">Crossbow</option>
+                                    <option value="voodooheads">Voodoo Heads</option>
+                                    <option value="auricshields">Auric Shields</option>
+                                </select>
+                                <input type="text" class="select-search" placeholder="Search types...">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label class="field-label">
+                                    <span class="label-icon"></span>
+                                    Tier
+                                </label>
+                                <div class="select-wrapper compact">
+                                    <select id="itemClass" multiple size="3">
+                                        <option value="">-- Any --</option>
+                                        <option value="elite">Elite</option>
+                                        <option value="exceptional">Exceptional</option>
+                                        <option value="normal">Normal</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="field-label">
+                                    <span class="label-icon"></span>
+                                    Ethereal
+                                </label>
+                                <div class="select-wrapper compact">
+                                    <select id="etherealFlag" multiple size="3">
+                                        <option value="">-- Any --</option>
+                                        <option value="== ethereal">Must be Ethereal</option>
+                                        <option value="!= ethereal">Not Ethereal</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="field-label">
+                                <span class="label-icon"></span>
+                                Quality
+                            </label>
+                            <div class="select-wrapper">
+                                <select id="itemQuality" multiple size="5">
+                                    <option value="">-- Select Quality --</option>
+                                    <option value="== unique">Unique</option>
+                                    <option value="== set">Set</option>
+                                    <option value="== rare">Rare</option>
+                                    <option value=">= rare">Rare or better</option>
+                                    <option value="== magic">Magic</option>
+                                    <option value=">= magic">Magic or better</option>
+                                    <option value="== crafted">Crafted</option>
+                                    <option value="== superior">Superior</option>
+                                    <option value="== normal">Normal</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="helper-text">
+                        <span class="helper-icon">?</span>
+                        Hold <kbd>Ctrl</kbd> or <kbd>Shift</kbd> for multiple selections
+                    </p>
+                </div>
             </section>
 
-            <!-- Stat Requirements Section -->
-            <section class="filter-section">
-                <h2>📊 Stat Requirements</h2>
-                <div id="statContainer">
-                    <!-- Stat rows will be added here dynamically -->
+            <section class="forge-panel stat-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h2 class="panel-title">Stat Requirements</h2>
+                    <div class="panel-line"></div>
                 </div>
-                <button type="button" id="addStatBtn" class="add-btn">+ Add Stat Requirement</button>
-                <button type="button" id="addGroupBtn" class="add-btn add-group-btn">+ Add Stat Group</button>
+
+                <div class="panel-content">
+                    <div id="statContainer" class="stat-container">
+                        <!-- Stat rows added dynamically -->
+                        <div class="stat-empty-state">
+                            <div class="empty-rune"></div>
+                            <p>No stat requirements yet</p>
+                            <span>Add requirements to filter by item stats</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-actions">
+                        <button type="button" id="addStatBtn" class="forge-btn btn-add">
+                            <span class="btn-icon">+</span>
+                            <span class="btn-text">Add Stat</span>
+                        </button>
+                        <button type="button" id="addGroupBtn" class="forge-btn btn-add-group">
+                            <span class="btn-icon">{ }</span>
+                            <span class="btn-text">Add Group</span>
+                        </button>
+                    </div>
+                </div>
             </section>
 
-            <!-- Generated NIP Output -->
-            <section class="output-section">
-                <h2>🎮 Generated NIP Filter</h2>
-                <div class="output-box" id="nipOutput">
-                    <span class="placeholder">Select options above to generate your NIP filter...</span>
+            <section class="forge-panel output-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <polyline points="16 18 22 12 16 6"/>
+                            <polyline points="8 6 2 12 8 18"/>
+                        </svg>
+                    </div>
+                    <h2 class="panel-title">Generated Filter</h2>
+                    <div class="panel-line"></div>
                 </div>
-                <div class="output-actions">
-                    <button type="button" id="copyBtn" class="action-btn copy-btn">📋 Copy to Clipboard</button>
-                    <button type="button" id="clearBtn" class="action-btn clear-btn">🗑️ Clear All</button>
+
+                <div class="panel-content">
+                    <div class="output-wrapper">
+                        <div class="output-header">
+                            <span class="output-label">NIP Output</span>
+                            <span class="output-lang">filter.nip</span>
+                        </div>
+                        <div class="output-box" id="nipOutput">
+                            <span class="output-placeholder">
+                                <span class="placeholder-rune"></span>
+                                Select options to inscribe your filter...
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="output-actions">
+                        <button type="button" id="addRuleBtn" class="forge-btn btn-primary">
+                            <span class="btn-text">Add to Filter</span>
+                            <span class="btn-glow"></span>
+                        </button>
+                        <button type="button" id="copyBtn" class="forge-btn btn-secondary">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2"/>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                            </svg>
+                            <span class="btn-text">Copy</span>
+                        </button>
+                        <button type="button" id="clearFormBtn" class="forge-btn btn-ghost">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                            <span class="btn-text">Clear Form</span>
+                        </button>
+                        <button type="button" id="clearBtn" class="forge-btn btn-danger">
+                            <span class="btn-text">Clear All</span>
+                        </button>
+                    </div>
                 </div>
             </section>
-
-
         </main>
 
-        <footer>
-            <p>NIP Filter Builder for D2R</p>
+        <footer class="forge-footer">
+            <div class="footer-rune"></div>
+            <p>Forged for the warriors of Sanctuary</p>
+            <div class="footer-rune"></div>
         </footer>
     </div>
 
+    <div id="toastContainer" class="toast-container"></div>
+
     <script src="app.js"></script>
 </body>
-
 </html>
