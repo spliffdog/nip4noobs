@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIP Filter Builder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 NIP Filter Builder</h1>
+            <p class="subtitle">Build item filters visually - see the NIP syntax as you go!</p>
+        </header>
+
+        <main>
+            <!-- Item Properties Section -->
+            <section class="filter-section">
+                <h2>📦 Item Properties</h2>
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="itemName">Item Name</label>
+                        <select id="itemName">
+                            <option value="">-- Select Item --</option>
+                            <optgroup label="Helms">
+                                <option value="shako">Shako</option>
+                                <option value="corona">Corona</option>
+                                <option value="diadem">Diadem</option>
+                                <option value="tiara">Tiara</option>
+                                <option value="circlet">Circlet</option>
+                                <option value="bonevisage">Bone Visage</option>
+                                <option value="grimhelm">Grim Helm</option>
+                                <option value="demonhead">Demon Head</option>
+                                <option value="spiredhelm">Spired Helm</option>
+                                <option value="slayerguard">Slayer Guard</option>
+                            </optgroup>
+                            <optgroup label="Body Armor">
+                                <option value="archonplate">Archon Plate</option>
+                                <option value="duskshroud">Dusk Shroud</option>
+                                <option value="mageplate">Mage Plate</option>
+                                <option value="sacredarmor">Sacred Armor</option>
+                                <option value="wirefleece">Wire Fleece</option>
+                                <option value="mesharmor">Mesh Armor</option>
+                            </optgroup>
+                            <optgroup label="Shields">
+                                <option value="monarch">Monarch</option>
+                                <option value="trollnest">Troll Nest</option>
+                                <option value="vortexshield">Vortex Shield</option>
+                                <option value="sacredtarge">Sacred Targe</option>
+                                <option value="zakarumshield">Zakarum Shield</option>
+                            </optgroup>
+                            <optgroup label="Gloves">
+                                <option value="lightgauntlets">Light Gauntlets</option>
+                                <option value="ogregauntlets">Ogre Gauntlets</option>
+                                <option value="chaingloves">Chain Gloves</option>
+                                <option value="vampirebonegloves">Vampire Bone Gloves</option>
+                            </optgroup>
+                            <optgroup label="Boots">
+                                <option value="warboots">War Boots</option>
+                                <option value="battleboots">Battle Boots</option>
+                                <option value="meshboots">Mesh Boots</option>
+                                <option value="scarabshellboots">Scarabshell Boots</option>
+                            </optgroup>
+                            <optgroup label="Belts">
+                                <option value="spiderwebsash">Spiderweb Sash</option>
+                                <option value="mithrilcoil">Mithril Coil</option>
+                                <option value="warbelt">War Belt</option>
+                            </optgroup>
+                            <optgroup label="Weapons">
+                                <option value="phaseblade">Phase Blade</option>
+                                <option value="berserkeraxe">Berserker Axe</option>
+                                <option value="colossusblade">Colossus Blade</option>
+                                <option value="thresher">Thresher</option>
+                                <option value="crypticaxe">Cryptic Axe</option>
+                                <option value="dimensionalshard">Dimensional Shard</option>
+                                <option value="swirlingcrystal">Swirling Crystal</option>
+                                <option value="hydrabow">Hydra Bow</option>
+                            </optgroup>
+                            <optgroup label="Jewelry">
+                                <option value="ring">Ring</option>
+                                <option value="amulet">Amulet</option>
+                                <option value="jewel">Jewel</option>
+                            </optgroup>
+                            <optgroup label="Charms">
+                                <option value="smallcharm">Small Charm</option>
+                                <option value="largecharm">Large Charm</option>
+                                <option value="grandcharm">Grand Charm</option>
+                            </optgroup>
+                            <optgroup label="Runes">
+                                <option value="elrune">El Rune</option>
+                                <option value="istrune">Ist Rune</option>
+                                <option value="malrune">Mal Rune</option>
+                                <option value="vexrune">Vex Rune</option>
+                                <option value="berrune">Ber Rune</option>
+                                <option value="jahrune">Jah Rune</option>
+                                <option value="zodrune">Zod Rune</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="itemType">Item Type</label>
+                        <select id="itemType">
+                            <option value="">-- Select Type --</option>
+                            <option value="armor">Armor</option>
+                            <option value="helm">Helm</option>
+                            <option value="shield">Shield</option>
+                            <option value="gloves">Gloves</option>
+                            <option value="boots">Boots</option>
+                            <option value="belt">Belt</option>
+                            <option value="ring">Ring</option>
+                            <option value="amulet">Amulet</option>
+                            <option value="circlet">Circlet</option>
+                            <option value="jewel">Jewel</option>
+                            <option value="weapon">Weapon</option>
+                            <option value="scepter">Scepter</option>
+                            <option value="wand">Wand</option>
+                            <option value="staff">Staff</option>
+                            <option value="orb">Orb</option>
+                            <option value="bow">Bow</option>
+                            <option value="crossbow">Crossbow</option>
+                            <option value="voodooheads">Voodoo Heads</option>
+                            <option value="auricshields">Auric Shields</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="itemQuality">Quality</label>
+                        <select id="itemQuality">
+                            <option value="">-- Select Quality --</option>
+                            <option value="== unique">Unique</option>
+                            <option value="== set">Set</option>
+                            <option value="== rare">Rare</option>
+                            <option value=">= rare">Rare or better</option>
+                            <option value="== magic">Magic</option>
+                            <option value=">= magic">Magic or better</option>
+                            <option value="== crafted">Crafted</option>
+                            <option value=">= crafted">Crafted or better</option>
+                            <option value="== superior">Superior</option>
+                            <option value="<= superior">Superior or worse</option>
+                            <option value="== normal">Normal</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="itemClass">Tier/Class</label>
+                        <select id="itemClass">
+                            <option value="">-- Select Tier --</option>
+                            <option value="elite">Elite</option>
+                            <option value="exceptional">Exceptional</option>
+                            <option value="normal">Normal</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="etherealFlag">Ethereal</label>
+                        <select id="etherealFlag">
+                            <option value="">-- Any --</option>
+                            <option value="== ethereal">Must be Ethereal</option>
+                            <option value="!= ethereal">Not Ethereal</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stat Requirements Section -->
+            <section class="filter-section">
+                <h2>📊 Stat Requirements</h2>
+                <div id="statContainer">
+                    <!-- Stat rows will be added here dynamically -->
+                </div>
+                <button type="button" id="addStatBtn" class="add-btn">+ Add Stat Requirement</button>
+            </section>
+
+            <!-- Generated NIP Output -->
+            <section class="output-section">
+                <h2>🎮 Generated NIP Filter</h2>
+                <div class="output-box" id="nipOutput">
+                    <span class="placeholder">Select options above to generate your NIP filter...</span>
+                </div>
+                <div class="output-actions">
+                    <button type="button" id="copyBtn" class="action-btn copy-btn">📋 Copy to Clipboard</button>
+                    <button type="button" id="clearBtn" class="action-btn clear-btn">🗑️ Clear All</button>
+                </div>
+            </section>
+
+
+        </main>
+
+        <footer>
+            <p>NIP Filter Builder for D2R</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
