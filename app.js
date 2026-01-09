@@ -161,6 +161,13 @@ function setupEventListeners() {
     itemTypeSelect.addEventListener('change', updateNameTypeExclusion);
 
     addStatBtn.addEventListener('click', addStatRow);
+
+    // Add Group button
+    const addGroupBtn = document.getElementById('addGroupBtn');
+    if (addGroupBtn) {
+        addGroupBtn.addEventListener('click', addStatGroup);
+    }
+
     copyBtn.addEventListener('click', copyToClipboard);
     clearBtn.addEventListener('click', clearAll);
 
@@ -380,6 +387,235 @@ function addStatRow() {
     updateOutput();
 }
 
+let groupCount = 0;
+
+function addStatGroup() {
+    groupCount++;
+    const group = document.createElement('div');
+    group.className = 'stat-group';
+    group.id = `stat-group-${groupCount}`;
+
+    // Group header
+    const header = document.createElement('div');
+    header.className = 'stat-group-header';
+
+    // Logic connector for the group (AND/OR with previous)
+    const groupLogic = document.createElement('select');
+    groupLogic.className = 'logic-select group-logic';
+    groupLogic.innerHTML = `
+        <option value="&&">AND</option>
+        <option value="||">OR</option>
+    `;
+    groupLogic.addEventListener('change', updateOutput);
+
+    // Hide logic for first item
+    if (statContainer.children.length === 0) {
+        groupLogic.style.visibility = 'hidden';
+    }
+
+    const matchLabel = document.createElement('span');
+    matchLabel.className = 'group-label';
+    matchLabel.textContent = 'Match at least';
+
+    const matchCount = document.createElement('select');
+    matchCount.className = 'match-count-select';
+    matchCount.innerHTML = `
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="all">All</option>
+    `;
+    matchCount.addEventListener('change', updateOutput);
+
+    const ofLabel = document.createElement('span');
+    ofLabel.className = 'group-label';
+    ofLabel.textContent = 'of these:';
+
+    const removeGroupBtn = document.createElement('button');
+    removeGroupBtn.type = 'button';
+    removeGroupBtn.className = 'remove-group-btn';
+    removeGroupBtn.textContent = '✕ Remove Group';
+    removeGroupBtn.addEventListener('click', () => {
+        group.remove();
+        updateFirstItemLogic();
+        updateOutput();
+    });
+
+    header.appendChild(groupLogic);
+    header.appendChild(matchLabel);
+    header.appendChild(matchCount);
+    header.appendChild(ofLabel);
+    header.appendChild(removeGroupBtn);
+
+    // Group conditions container
+    const conditionsContainer = document.createElement('div');
+    conditionsContainer.className = 'group-conditions';
+
+    // Add condition button
+    const addConditionBtn = document.createElement('button');
+    addConditionBtn.type = 'button';
+    addConditionBtn.className = 'add-condition-btn';
+    addConditionBtn.textContent = '+ Add Condition';
+    addConditionBtn.addEventListener('click', () => {
+        addGroupCondition(conditionsContainer, matchCount);
+    });
+
+    group.appendChild(header);
+    group.appendChild(conditionsContainer);
+    group.appendChild(addConditionBtn);
+
+    statContainer.appendChild(group);
+
+    // Add two initial conditions
+    addGroupCondition(conditionsContainer, matchCount);
+    addGroupCondition(conditionsContainer, matchCount);
+
+    updateOutput();
+}
+
+function addGroupCondition(container, matchCountSelect) {
+    const row = document.createElement('div');
+    row.className = 'group-condition-row';
+
+    // Stat combobox (reuse same pattern)
+    const statCombo = document.createElement('div');
+    statCombo.className = 'stat-combobox';
+
+    const statDisplay = document.createElement('div');
+    statDisplay.className = 'stat-display';
+    statDisplay.textContent = '-- Select Stat --';
+    statDisplay.dataset.value = '';
+
+    const statDropdown = document.createElement('div');
+    statDropdown.className = 'stat-dropdown';
+
+    const statSearch = document.createElement('input');
+    statSearch.type = 'text';
+    statSearch.className = 'stat-dropdown-search';
+    statSearch.placeholder = '🔍 Type to search...';
+
+    const statOptions = document.createElement('div');
+    statOptions.className = 'stat-options';
+
+    const populateOptions = (filter = '') => {
+        statOptions.innerHTML = '';
+        STAT_OPTIONS.forEach(opt => {
+            if (opt.value === '') return;
+            if (filter && !opt.label.toLowerCase().includes(filter) && !opt.value.toLowerCase().includes(filter)) {
+                return;
+            }
+            const optDiv = document.createElement('div');
+            optDiv.className = 'stat-option';
+            optDiv.textContent = opt.label;
+            optDiv.dataset.value = opt.value;
+            optDiv.addEventListener('click', (e) => {
+                e.stopPropagation();
+                statDisplay.textContent = opt.label;
+                statDisplay.dataset.value = opt.value;
+                statCombo.classList.remove('open');
+                statSearch.value = '';
+                populateOptions();
+                updateMatchCountOptions(container, matchCountSelect);
+                updateOutput();
+            });
+            statOptions.appendChild(optDiv);
+        });
+    };
+    populateOptions();
+
+    statSearch.addEventListener('input', () => {
+        populateOptions(statSearch.value.toLowerCase().trim());
+    });
+    statSearch.addEventListener('click', (e) => e.stopPropagation());
+
+    statDisplay.addEventListener('click', () => {
+        document.querySelectorAll('.stat-combobox.open').forEach(cb => {
+            if (cb !== statCombo) cb.classList.remove('open');
+        });
+        statCombo.classList.toggle('open');
+        if (statCombo.classList.contains('open')) {
+            setTimeout(() => statSearch.focus(), 0);
+        }
+    });
+
+    statDropdown.appendChild(statSearch);
+    statDropdown.appendChild(statOptions);
+    statCombo.appendChild(statDisplay);
+    statCombo.appendChild(statDropdown);
+
+    // Operator
+    const opSelect = document.createElement('select');
+    opSelect.className = 'op-select';
+    OPERATORS.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt.value;
+        option.textContent = opt.label;
+        opSelect.appendChild(option);
+    });
+    opSelect.value = '>=';
+    opSelect.addEventListener('change', updateOutput);
+
+    // Value
+    const valueInput = document.createElement('input');
+    valueInput.type = 'number';
+    valueInput.className = 'value-input';
+    valueInput.placeholder = 'Value';
+    valueInput.addEventListener('input', updateOutput);
+
+    // Remove button
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'remove-stat-btn';
+    removeBtn.textContent = '✕';
+    removeBtn.addEventListener('click', () => {
+        row.remove();
+        updateMatchCountOptions(container, matchCountSelect);
+        updateOutput();
+    });
+
+    row.appendChild(statCombo);
+    row.appendChild(opSelect);
+    row.appendChild(valueInput);
+    row.appendChild(removeBtn);
+    container.appendChild(row);
+
+    updateMatchCountOptions(container, matchCountSelect);
+}
+
+function updateMatchCountOptions(container, matchCountSelect) {
+    const conditionCount = container.querySelectorAll('.group-condition-row').length;
+    const currentValue = matchCountSelect.value;
+
+    matchCountSelect.innerHTML = '';
+    for (let i = 1; i <= conditionCount; i++) {
+        const opt = document.createElement('option');
+        opt.value = i.toString();
+        opt.textContent = i.toString();
+        matchCountSelect.appendChild(opt);
+    }
+    const allOpt = document.createElement('option');
+    allOpt.value = 'all';
+    allOpt.textContent = 'All';
+    matchCountSelect.appendChild(allOpt);
+
+    // Restore value if still valid
+    if (currentValue === 'all' || parseInt(currentValue) <= conditionCount) {
+        matchCountSelect.value = currentValue;
+    } else {
+        matchCountSelect.value = '1';
+    }
+}
+
+function updateFirstItemLogic() {
+    const firstItem = statContainer.querySelector('.stat-row, .stat-group');
+    if (firstItem) {
+        const logicSelect = firstItem.querySelector('.logic-select, .group-logic');
+        if (logicSelect) {
+            logicSelect.style.visibility = 'hidden';
+        }
+    }
+}
+
 // Helper to get selected values from a multi-select
 function getSelectedValues(selectElement) {
     return Array.from(selectElement.selectedOptions).map(opt => opt.value).filter(v => v);
@@ -476,36 +712,70 @@ function generateCurrentNipRule() {
     // Build item property section
     let nipLine = parts.join(' && ');
 
-    // Stat requirements with explicit parentheses from UI
-    const statRows = statContainer.querySelectorAll('.stat-row');
+    // Process all stat items (rows and groups) in order
+    const statItems = statContainer.querySelectorAll(':scope > .stat-row, :scope > .stat-group');
     let statExpression = '';
+    let itemIndex = 0;
 
-    statRows.forEach((row, index) => {
-        const openParen = row.querySelector('.open-paren');
-        const closeParen = row.querySelector('.close-paren');
-        const logic = row.querySelector('.logic-select').value;
-        const statDisplay = row.querySelector('.stat-display');
-        const stat = statDisplay ? statDisplay.dataset.value : '';
-        const op = row.querySelector('.op-select').value;
-        const value = row.querySelector('.value-input').value;
+    statItems.forEach((item) => {
+        if (item.classList.contains('stat-row')) {
+            // Regular stat row
+            const openParen = item.querySelector('.open-paren');
+            const closeParen = item.querySelector('.close-paren');
+            const logic = item.querySelector('.logic-select').value;
+            const statDisplay = item.querySelector('.stat-display');
+            const stat = statDisplay ? statDisplay.dataset.value : '';
+            const op = item.querySelector('.op-select').value;
+            const value = item.querySelector('.value-input').value;
 
-        if (stat && value !== '') {
-            // Add logic operator (except for first condition)
-            if (statExpression && index > 0) {
-                statExpression += ` ${logic} `;
+            if (stat && value !== '') {
+                if (statExpression && itemIndex > 0) {
+                    statExpression += ` ${logic} `;
+                }
+                if (openParen && openParen.classList.contains('active')) {
+                    statExpression += '(';
+                }
+                statExpression += `[${stat}] ${op} ${value}`;
+                if (closeParen && closeParen.classList.contains('active')) {
+                    statExpression += ')';
+                }
+                itemIndex++;
             }
+        } else if (item.classList.contains('stat-group')) {
+            // Stat group with "match N of" logic
+            const groupLogic = item.querySelector('.group-logic').value;
+            const matchCount = item.querySelector('.match-count-select').value;
+            const conditions = [];
 
-            // Add opening paren if active
-            if (openParen && openParen.classList.contains('active')) {
-                statExpression += '(';
-            }
+            item.querySelectorAll('.group-condition-row').forEach(row => {
+                const statDisplay = row.querySelector('.stat-display');
+                const stat = statDisplay ? statDisplay.dataset.value : '';
+                const op = row.querySelector('.op-select').value;
+                const value = row.querySelector('.value-input').value;
 
-            // Add the stat condition
-            statExpression += `[${stat}] ${op} ${value}`;
+                if (stat && value !== '') {
+                    conditions.push(`[${stat}] ${op} ${value}`);
+                }
+            });
 
-            // Add closing paren if active
-            if (closeParen && closeParen.classList.contains('active')) {
-                statExpression += ')';
+            if (conditions.length > 0) {
+                let groupExpr = '';
+
+                if (matchCount === 'all' || parseInt(matchCount) >= conditions.length) {
+                    // All must match - just AND them together
+                    groupExpr = `(${conditions.join(' && ')})`;
+                } else {
+                    // Generate combinations for "at least N"
+                    const combos = getCombinations(conditions, parseInt(matchCount));
+                    const comboExprs = combos.map(combo => `(${combo.join(' && ')})`);
+                    groupExpr = `(${comboExprs.join(' || ')})`;
+                }
+
+                if (statExpression && itemIndex > 0) {
+                    statExpression += ` ${groupLogic} `;
+                }
+                statExpression += groupExpr;
+                itemIndex++;
             }
         }
     });
@@ -515,6 +785,29 @@ function generateCurrentNipRule() {
     }
 
     return nipLine;
+}
+
+// Generate combinations of size k from array
+function getCombinations(arr, k) {
+    if (k === 1) return arr.map(x => [x]);
+    if (k === arr.length) return [arr];
+
+    const result = [];
+
+    function combine(start, combo) {
+        if (combo.length === k) {
+            result.push([...combo]);
+            return;
+        }
+        for (let i = start; i < arr.length; i++) {
+            combo.push(arr[i]);
+            combine(i + 1, combo);
+            combo.pop();
+        }
+    }
+
+    combine(0, []);
+    return result;
 }
 
 

@@ -277,6 +277,95 @@ optgroup {
     box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
 }
 
+.add-group-btn {
+    background: linear-gradient(135deg, var(--accent-warning), #e67e22);
+    margin-left: 0.5rem;
+}
+
+/* Stat Group */
+.stat-group {
+    background: rgba(99, 102, 241, 0.1);
+    border: 2px solid var(--accent-primary);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.stat-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.group-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.match-count-select {
+    background: var(--accent-secondary);
+    color: white;
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.group-conditions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.group-condition-row {
+    display: grid;
+    grid-template-columns: 1fr auto 100px auto;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--bg-input);
+    border-radius: 6px;
+}
+
+.add-condition-btn {
+    background: transparent;
+    border: 1px dashed var(--accent-primary);
+    color: var(--accent-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.add-condition-btn:hover {
+    background: var(--accent-primary);
+    color: white;
+    border-style: solid;
+}
+
+.remove-group-btn {
+    background: transparent;
+    border: 1px solid var(--accent-danger);
+    color: var(--accent-danger);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-left: auto;
+    transition: all 0.2s ease;
+}
+
+.remove-group-btn:hover {
+    background: var(--accent-danger);
+    color: white;
+}
+
 /* Output Box */
 .output-box {
     background: #0d1117;
