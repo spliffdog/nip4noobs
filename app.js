@@ -88,15 +88,77 @@ const clearBtn = document.getElementById('clearBtn');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    setupSearchableSelects();
     setupEventListeners();
     updateOutput();
 });
+
+// Make multi-selects searchable by adding filter inputs (only for long lists)
+function setupSearchableSelects() {
+    const searchableSelects = [
+        { select: itemNameSelect, placeholder: '🔍 Search items...' },
+        { select: itemTypeSelect, placeholder: '🔍 Search types...' }
+    ];
+
+    searchableSelects.forEach(({ select, placeholder }) => {
+        // Create search input
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'select-search';
+        searchInput.placeholder = placeholder;
+
+        // Insert before the select
+        select.parentNode.insertBefore(searchInput, select);
+
+        // Store original options (only direct children to avoid duplicates)
+        const originalOptions = Array.from(select.querySelectorAll(':scope > option, :scope > optgroup'));
+
+        // Filter on input
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase().trim();
+
+            if (!query) {
+                // Restore all options
+                select.innerHTML = '';
+                originalOptions.forEach(el => select.appendChild(el.cloneNode(true)));
+                return;
+            }
+
+            // Filter options
+            select.innerHTML = '';
+            originalOptions.forEach(el => {
+                if (el.tagName === 'OPTGROUP') {
+                    // Clone optgroup and filter its children
+                    const groupClone = el.cloneNode(false);
+                    Array.from(el.querySelectorAll('option')).forEach(opt => {
+                        if (opt.textContent.toLowerCase().includes(query) ||
+                            opt.value.toLowerCase().includes(query)) {
+                            groupClone.appendChild(opt.cloneNode(true));
+                        }
+                    });
+                    if (groupClone.children.length > 0) {
+                        select.appendChild(groupClone);
+                    }
+                } else if (el.tagName === 'OPTION') {
+                    if (el.textContent.toLowerCase().includes(query) ||
+                        el.value.toLowerCase().includes(query)) {
+                        select.appendChild(el.cloneNode(true));
+                    }
+                }
+            });
+        });
+    });
+}
 
 function setupEventListeners() {
     // Property selects - update output on change
     [itemNameSelect, itemTypeSelect, itemQualitySelect, itemClassSelect, etherealFlagSelect].forEach(select => {
         select.addEventListener('change', updateOutput);
     });
+
+    // Mutual exclusion between itemName and itemType
+    itemNameSelect.addEventListener('change', updateNameTypeExclusion);
+    itemTypeSelect.addEventListener('change', updateNameTypeExclusion);
 
     addStatBtn.addEventListener('click', addStatRow);
     copyBtn.addEventListener('click', copyToClipboard);
@@ -121,6 +183,28 @@ function setupEventListeners() {
     clearCurrentBtn.innerHTML = '🔄 Clear Form';
     clearCurrentBtn.addEventListener('click', clearCurrentRule);
     outputActions.insertBefore(clearCurrentBtn, clearBtn);
+}
+
+// Mutual exclusion: disable itemType when itemName has selections, and vice versa
+function updateNameTypeExclusion() {
+    const namesSelected = getSelectedValues(itemNameSelect).length > 0;
+    const typesSelected = getSelectedValues(itemTypeSelect).length > 0;
+
+    if (namesSelected) {
+        itemTypeSelect.disabled = true;
+        itemTypeSelect.classList.add('disabled-exclusive');
+    } else {
+        itemTypeSelect.disabled = false;
+        itemTypeSelect.classList.remove('disabled-exclusive');
+    }
+
+    if (typesSelected) {
+        itemNameSelect.disabled = true;
+        itemNameSelect.classList.add('disabled-exclusive');
+    } else {
+        itemNameSelect.disabled = false;
+        itemNameSelect.classList.remove('disabled-exclusive');
+    }
 }
 
 function addStatRow() {
@@ -172,16 +256,72 @@ function addStatRow() {
         row.classList.add('and-group');
     }
 
-    // Stat select
-    const statSelect = document.createElement('select');
-    statSelect.className = 'stat-select';
-    STAT_OPTIONS.forEach(opt => {
-        const option = document.createElement('option');
-        option.value = opt.value;
-        option.textContent = opt.label;
-        statSelect.appendChild(option);
+    // Stat select - custom searchable combobox
+    const statCombo = document.createElement('div');
+    statCombo.className = 'stat-combobox';
+
+    const statDisplay = document.createElement('div');
+    statDisplay.className = 'stat-display';
+    statDisplay.textContent = '-- Select Stat --';
+    statDisplay.dataset.value = '';
+
+    const statDropdown = document.createElement('div');
+    statDropdown.className = 'stat-dropdown';
+
+    const statSearch = document.createElement('input');
+    statSearch.type = 'text';
+    statSearch.className = 'stat-dropdown-search';
+    statSearch.placeholder = '🔍 Type to search...';
+
+    const statOptions = document.createElement('div');
+    statOptions.className = 'stat-options';
+
+    // Populate options
+    const populateOptions = (filter = '') => {
+        statOptions.innerHTML = '';
+        STAT_OPTIONS.forEach(opt => {
+            if (opt.value === '') return; // Skip placeholder
+            if (filter && !opt.label.toLowerCase().includes(filter) && !opt.value.toLowerCase().includes(filter)) {
+                return;
+            }
+            const optDiv = document.createElement('div');
+            optDiv.className = 'stat-option';
+            optDiv.textContent = opt.label;
+            optDiv.dataset.value = opt.value;
+            optDiv.addEventListener('click', (e) => {
+                e.stopPropagation();
+                statDisplay.textContent = opt.label;
+                statDisplay.dataset.value = opt.value;
+                statCombo.classList.remove('open');
+                statSearch.value = '';
+                populateOptions();
+                updateOutput();
+            });
+            statOptions.appendChild(optDiv);
+        });
+    };
+    populateOptions();
+
+    statSearch.addEventListener('input', () => {
+        populateOptions(statSearch.value.toLowerCase().trim());
     });
-    statSelect.addEventListener('change', updateOutput);
+
+    statSearch.addEventListener('click', (e) => e.stopPropagation());
+
+    statDisplay.addEventListener('click', () => {
+        document.querySelectorAll('.stat-combobox.open').forEach(cb => {
+            if (cb !== statCombo) cb.classList.remove('open');
+        });
+        statCombo.classList.toggle('open');
+        if (statCombo.classList.contains('open')) {
+            setTimeout(() => statSearch.focus(), 0);
+        }
+    });
+
+    statDropdown.appendChild(statSearch);
+    statDropdown.appendChild(statOptions);
+    statCombo.appendChild(statDisplay);
+    statCombo.appendChild(statDropdown);
 
     // Operator select
     const opSelect = document.createElement('select');
@@ -230,7 +370,7 @@ function addStatRow() {
 
     row.appendChild(openParen);
     row.appendChild(logicSelect);
-    row.appendChild(statSelect);
+    row.appendChild(statCombo);
     row.appendChild(opSelect);
     row.appendChild(valueInput);
     row.appendChild(closeParen);
@@ -240,35 +380,97 @@ function addStatRow() {
     updateOutput();
 }
 
+// Helper to get selected values from a multi-select
+function getSelectedValues(selectElement) {
+    return Array.from(selectElement.selectedOptions).map(opt => opt.value).filter(v => v);
+}
+
+// Helper to generate multi-value condition (wraps in OR if multiple)
+function generateMultiCondition(property, values, useOperator = '==') {
+    if (values.length === 0) return '';
+    if (values.length === 1) {
+        // Quality/ethereal values may already include operator
+        if (property === 'quality' || property === 'flag') {
+            return `[${property}] ${values[0]}`;
+        }
+        return `[${property}] ${useOperator} ${values[0]}`;
+    }
+    // Multiple values - wrap in parentheses with OR
+    const conditions = values.map(v => {
+        if (property === 'quality' || property === 'flag') {
+            return `[${property}] ${v}`;
+        }
+        return `[${property}] ${useOperator} ${v}`;
+    });
+    return `(${conditions.join(' || ')})`;
+}
+
+// Validate parentheses balance in stat rows
+function validateParentheses() {
+    const statRows = statContainer.querySelectorAll('.stat-row');
+    let openCount = 0;
+    let errors = [];
+
+    statRows.forEach((row, index) => {
+        const openParen = row.querySelector('.open-paren');
+        const closeParen = row.querySelector('.close-paren');
+        const statDisplay = row.querySelector('.stat-display');
+        const stat = statDisplay ? statDisplay.dataset.value : '';
+        const value = row.querySelector('.value-input').value;
+
+        // Only count parens for valid stat rows
+        if (stat && value !== '') {
+            if (openParen && openParen.classList.contains('active')) {
+                openCount++;
+            }
+            if (closeParen && closeParen.classList.contains('active')) {
+                if (openCount <= 0) {
+                    errors.push(`Row ${index + 1}: Cannot close parenthesis without opening one first`);
+                } else {
+                    openCount--;
+                }
+            }
+        }
+    });
+
+    if (openCount > 0) {
+        errors.push(`${openCount} unclosed parenthesis - add closing paren(s)`);
+    }
+
+    return errors;
+}
+
 function generateCurrentNipRule() {
     const parts = [];
 
-    // Name or Type
-    const name = itemNameSelect.value;
-    const type = itemTypeSelect.value;
-
-    if (name) {
-        parts.push(`[name] == ${name}`);
-    } else if (type) {
-        parts.push(`[type] == ${type}`);
+    // Name (multi-select)
+    const names = getSelectedValues(itemNameSelect);
+    if (names.length > 0) {
+        parts.push(generateMultiCondition('name', names));
     }
 
-    // Quality
-    const quality = itemQualitySelect.value;
-    if (quality) {
-        parts.push(`[quality] ${quality}`);
+    // Type (multi-select) - only if no names selected
+    const types = getSelectedValues(itemTypeSelect);
+    if (names.length === 0 && types.length > 0) {
+        parts.push(generateMultiCondition('type', types));
     }
 
-    // Class/Tier
-    const itemClass = itemClassSelect.value;
-    if (itemClass) {
-        parts.push(`[class] == ${itemClass}`);
+    // Quality (multi-select)
+    const qualities = getSelectedValues(itemQualitySelect);
+    if (qualities.length > 0) {
+        parts.push(generateMultiCondition('quality', qualities));
     }
 
-    // Ethereal
-    const ethereal = etherealFlagSelect.value;
-    if (ethereal) {
-        parts.push(`[flag] ${ethereal}`);
+    // Class/Tier (multi-select)
+    const classes = getSelectedValues(itemClassSelect);
+    if (classes.length > 0) {
+        parts.push(generateMultiCondition('class', classes));
+    }
+
+    // Ethereal (multi-select)
+    const ethereals = getSelectedValues(etherealFlagSelect);
+    if (ethereals.length > 0) {
+        parts.push(generateMultiCondition('flag', ethereals));
     }
 
     // Build item property section
@@ -282,7 +484,8 @@ function generateCurrentNipRule() {
         const openParen = row.querySelector('.open-paren');
         const closeParen = row.querySelector('.close-paren');
         const logic = row.querySelector('.logic-select').value;
-        const stat = row.querySelector('.stat-select').value;
+        const statDisplay = row.querySelector('.stat-display');
+        const stat = statDisplay ? statDisplay.dataset.value : '';
         const op = row.querySelector('.op-select').value;
         const value = row.querySelector('.value-input').value;
 
@@ -317,8 +520,14 @@ function generateCurrentNipRule() {
 
 function updateOutput() {
     const currentRule = generateCurrentNipRule();
+    const parenErrors = validateParentheses();
 
     let outputHtml = '';
+
+    // Show parentheses validation errors
+    if (parenErrors.length > 0) {
+        outputHtml += '<div class="validation-error">⚠️ ' + parenErrors.join('<br>⚠️ ') + '</div>';
+    }
 
     // Show saved rules first
     if (savedRules.length > 0) {
@@ -336,7 +545,7 @@ function updateOutput() {
         } else {
             outputHtml += currentRule;
         }
-    } else if (savedRules.length === 0) {
+    } else if (savedRules.length === 0 && parenErrors.length === 0) {
         outputHtml = '<span class="placeholder">Select options above to generate your NIP filter...</span>';
     }
 
@@ -345,9 +554,15 @@ function updateOutput() {
 
 function addCurrentRule() {
     const currentRule = generateCurrentNipRule();
+    const parenErrors = validateParentheses();
 
     if (!currentRule) {
         showToast('⚠️ Build a rule first!', 'warning');
+        return;
+    }
+
+    if (parenErrors.length > 0) {
+        showToast('⚠️ Fix parentheses first!', 'warning');
         return;
     }
 
